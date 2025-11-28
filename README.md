@@ -2,6 +2,8 @@
 
 This is my personal Waybar config for [Omarchy](https://omarchy.org/), built on top of the excellent HANCORE theme pack (details [here](https://github.com/HANCORE-linux/waybar-themes)).
 
+![Waybar preview](./image.png)
+
 ## Requirements
 
 This setup assumes the following tools are already available:
