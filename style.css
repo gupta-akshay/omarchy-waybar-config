@@ -132,13 +132,12 @@ window#waybar.hidden {
 }
 
 #tray-expander {
-  /* padding: 0 5px; */
+  padding: 0 5px;
 }
 
 #custom-expand-icon {
   color: @fg;
-  /* margin-left: 8px; */
-  /* padding: 0 5px; */
+  margin-left: 8px;
 }
 
 #cpu:hover,
