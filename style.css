@@ -1,0 +1,176 @@
+@import "../omarchy/current/theme/waybar.css";
+
+@define-color bg @background;
+@define-color fg @foreground;
+@define-color rd1 #ff9b71;
+@define-color dark-bg #11111b;
+@define-color hover-bg #313244;
+
+* {
+  font-family: 'JetBrainsMono Nerd Font Propo';
+  font-size: 13px;
+  font-weight: bold;
+  border: none;
+  border-radius: 20px;
+  min-height: 0;
+}
+
+tooltip {
+  background: @dark-bg;
+  border-radius: 15px;
+  border: 1px solid @rd1;
+}
+
+tooltip label {
+  color: @fg;
+  padding: 5px;
+}
+
+window#waybar {
+  background-color: transparent;
+  transition-property: background-color;
+  transition-duration: .5s;
+  margin: 10px;
+}
+
+window#waybar.hidden {
+  opacity: 0.2;
+}
+
+.modules-left, .modules-center, .modules-right {
+  background: transparent;
+  margin: 5px;
+  /* margin-top: 5px; */
+}
+
+#workspaces {
+  background-color: @dark-bg;
+  margin: 2px 4px;
+  padding: 0 5px;
+  border-radius: 20px;
+  opacity: 0.9;
+}
+
+#workspaces button {
+  color: @fg;
+  background-color: transparent;
+  margin: 4px 2px;
+  padding: 0 10px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+#workspaces button:hover {
+  background-color: @hover-bg;
+  color: @fg;
+}
+
+#workspaces button.active {
+  background-color: @rd1;
+  color: @dark-bg;
+  min-width: 40px;
+  background-size: 400% 400%;
+}
+
+#workspaces button.urgent {
+  color: #ff0000;
+  background-color: #f9e2af;
+}
+
+#workspaces button.empty {
+  color: #6c7086;
+}
+
+#tray,
+#window,
+#cava,
+#mpris,
+#cpu,
+#memory,
+#battery,
+#network,
+#temperature,
+#bluetooth,
+#pulseaudio,
+#custom-omarchy,
+#custom-weather,
+#custom-update,
+#custom-updatespacman,
+#custom-cava,
+#clock,
+#tray-expander {
+  background-color: @dark-bg;
+  color: @fg;
+  margin: 2px;
+  padding: 0 15px;
+  border-radius: 20px;
+  opacity: 0.9;
+  padding: 2px 15px;
+}
+
+#custom-omarchy {
+  color: @rd1;
+  padding: 0 12px;
+  font-size: 12px;
+}
+
+#window {
+  margin: 2px 4px;
+}
+
+#clock {
+  font-weight: 800;
+}
+
+#custom-update, #custom-updatespacman {
+  color: @rd1;
+}
+
+#cava {
+  color: @rd1;
+  padding: 0 12px;
+}
+
+#tray-expander {
+  /* padding: 0 5px; */
+}
+
+#custom-expand-icon {
+  color: @fg;
+  /* margin-left: 8px; */
+  /* padding: 0 5px; */
+}
+
+#cpu:hover,
+#memory:hover,
+#temperature:hover,
+#bluetooth:hover,
+#network:hover,
+#pulseaudio:hover,
+#battery:hover,
+#clock:hover,
+#custom-weather:hover {
+  background-color: @hover-bg;
+  color: @rd1;
+}
+
+#battery.charging, #battery.plugged {
+  color: #a6e3a1;
+}
+
+#battery.critical:not(.charging) {
+  background-color: #f38ba8;
+  color: @dark-bg;
+  animation-name: blink;
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes blink {
+  to {
+    background-color: @fg;
+    color: #f38ba8;
+  }
+}
