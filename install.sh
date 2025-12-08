@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PACKAGES=(cava libcava wttrbar waybar-module-pacman-updates)
-FILES=(config.jsonc style.css cava.sh)
+PACKAGES=(cava libcava wttrbar waybar-module-pacman-updates bc lvsk-calendar)
+FILES=(config.jsonc style.css cava.sh net_speed.sh)
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WAYBAR_DIR="${HOME}/.config/waybar"
 SKIP_PACKAGES=false
@@ -80,6 +80,7 @@ copy_config() {
   done
 
   chmod +x "$WAYBAR_DIR/cava.sh"
+  chmod +x "$WAYBAR_DIR/net_speed.sh"
 }
 
 main() {

@@ -37,7 +37,9 @@ window#waybar.hidden {
   opacity: 0.2;
 }
 
-.modules-left, .modules-center, .modules-right {
+.modules-left,
+.modules-center,
+.modules-right {
   background: transparent;
   margin: 5px;
   /* margin-top: 5px; */
@@ -97,6 +99,8 @@ window#waybar.hidden {
 #custom-update,
 #custom-updatespacman,
 #custom-cava,
+#custom-calendar,
+#custom-netspeed,
 #clock,
 #tray-expander {
   background-color: @dark-bg;
@@ -122,7 +126,8 @@ window#waybar.hidden {
   font-weight: 800;
 }
 
-#custom-update, #custom-updatespacman {
+#custom-update,
+#custom-updatespacman {
   color: @rd1;
 }
 
@@ -148,12 +153,15 @@ window#waybar.hidden {
 #pulseaudio:hover,
 #battery:hover,
 #clock:hover,
-#custom-weather:hover {
+#custom-weather:hover,
+#custom-calendar:hover,
+#custom-netspeed:hover {
   background-color: @hover-bg;
   color: @rd1;
 }
 
-#battery.charging, #battery.plugged {
+#battery.charging,
+#battery.plugged {
   color: #a6e3a1;
 }
 

@@ -13,7 +13,9 @@
   ],
   "modules-center": [
     "clock",
+    "custom/calendar",
     "custom/weather",
+    "custom/netspeed",
     "custom/updatespacman",
     "custom/update"
   ],
@@ -255,4 +257,15 @@
     ],
     "tooltip": true
   },
+  "custom/calendar": {
+    "format": " 󰃭 ",
+    "on-click": "lvsk-calendar-launcher",
+    "tooltip-format": "Click to open calendar"
+  },
+  "custom/netspeed": {
+    "exec": "~/.config/waybar/net_speed.sh",
+    "interval": 1,
+    "format": "{}",
+    "tooltip": false
+  }
 }
