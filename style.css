@@ -179,6 +179,33 @@ window#waybar.hidden {
   animation-direction: alternate;
 }
 
+#disk.warning {
+  color: #f9e2af;
+}
+
+#disk.critical {
+  color: #f38ba8;
+  animation-name: blink;
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+#temperature.critical {
+  color: #f38ba8;
+  background-color: rgba(243, 139, 168, 0.2);
+}
+
+#mpris {
+  min-width: 200px;
+}
+
+#mpris:hover {
+  background-color: @hover-bg;
+  color: @rd1;
+}
+
 @keyframes blink {
   to {
     background-color: @fg;
