@@ -32,6 +32,8 @@
   ],
   "hyprland/workspaces": {
     "on-click": "activate",
+    "on-scroll-up": "hyprctl dispatch workspace e+1",
+    "on-scroll-down": "hyprctl dispatch workspace e-1",
     "format": "{icon}",
     "format-icons": {
       "1": "1",
@@ -79,25 +81,30 @@
       "updated": "󰂪"
     },
     "exec-if": "which waybar-module-pacman-updates",
-    "exec": "waybar-module-pacman-updates --interval-seconds 5 --network-interval-seconds 300"
+    "exec": "waybar-module-pacman-updates --interval-seconds 5 --network-interval-seconds 300",
+    "on-click": "omarchy-launch-floating-terminal-with-presentation sudo pacman -Syu",
+    "tooltip-format": "{} package updates available"
   },
   "cpu": {
     "interval": 5,
     "format": "{usage}% 󰍛",
     "on-click": "omarchy-launch-or-focus-tui btop",
-    "tooltip-format": "CPU: {usage}%"
+    "on-click-right": "omarchy-launch-or-focus-tui htop",
+    "tooltip-format": "CPU: {usage}%\nLoad: {load}"
   },
   "clock": {
     "format": "{:%A %H:%M}",
     "format-alt": "{:%d %B W%V %Y}",
-    "tooltip": false,
+    "tooltip-format": "{:%A, %B %d, %Y}\n{:%H:%M:%S}",
+    "on-click": "lvsk-calendar-launcher",
     "on-click-right": "omarchy-cmd-tzupdate"
   },
   "memory": {
     "interval": 5,
     "format": "  {percentage}%",
     "on-click": "omarchy-launch-or-focus-tui btop",
-    "tooltip-format": "Memory: {used:0.1f}G / {total:0.1f}G ({percentage}%)"
+    "on-click-right": "omarchy-launch-or-focus-tui htop",
+    "tooltip-format": "Memory: {used:0.1f}G / {total:0.1f}G ({percentage}%)\nSwap: {swapUsed:0.1f}G / {swapTotal:0.1f}G"
   },
   "network": {
     "format-icons": [
@@ -111,12 +118,13 @@
     "format-wifi": "{icon}",
     "format-ethernet": "{ifname} 󰀂",
     "format-disconnected": "󰖪",
-    "tooltip-format-wifi": "{essid} ({frequency} GHz)\n⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}",
-    "tooltip-format-ethernet": "⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}",
+    "tooltip-format-wifi": "{essid} ({frequency} GHz)\nIP: {ipaddr}\n⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}",
+    "tooltip-format-ethernet": "IP: {ipaddr}\n⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}",
     "tooltip-format-disconnected": "Disconnected",
     "interval": 3,
     "nospacing": 1,
-    "on-click": "ghostty --class=Impala -e impala"
+    "on-click": "ghostty --class=Impala -e impala",
+    "on-click-right": "nm-connection-editor"
   },
   "battery": {
     "format": "{capacity}% {icon}",
@@ -152,6 +160,8 @@
     "format-full": "󰂅",
     "tooltip-format-discharging": "{power:>1.0f}W↓ {capacity}%\nTime remaining: {time}",
     "tooltip-format-charging": "{power:>1.0f}W↑ {capacity}%\nTime until full: {time}",
+    "tooltip-format-full": "Full ({capacity}%)",
+    "on-click-right": "powerprofilesctl",
     "interval": 5,
     "states": {
       "warning": 20,
@@ -167,11 +177,13 @@
   },
   "pulseaudio": {
     "format": "{volume}% {icon}",
+    "format-muted": "󰝟 {volume}%",
     "on-click": "ghostty --class=Wiremix -e wiremix",
     "on-click-right": "omarchy-launch-or-focus-tui wiremix",
-    "tooltip-format": "Playing at {volume}%",
+    "on-click-middle": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+    "tooltip-format": "{volume}% | {format_source}",
+    "tooltip-format-muted": "Muted ({volume}%)",
     "scroll-step": 5,
-    "format-muted": "󰝟",
     "format-icons": {
       "default": [
         "",
@@ -201,21 +213,31 @@
     "spacing": 12
   },
   "custom/cava": {
-    //"cava_config": "~/.config/cava/config",
     "format": "{}",
     "exec": "~/.config/waybar/cava.sh"
   },
   "mpris": {
-    "format": "{artist} - {title}",
-    //"format": "{player_icon} {artist} - {title}",
-    //"format-paused": "{status_icon} {artist} - {title}",
+    "format": "{status_icon} {artist} - {title}",
+    "format-paused": "{status_icon} {artist} - {title}",
+    "format-stopped": "{status_icon}",
+    "format-disconnected": "",
     "player-icons": {
       "default": "🎵",
-      "mpv": "🎵"
+      "mpv": "🎵",
+      "spotify": "󰓇",
+      "firefox": "󰈹"
     },
     "status-icons": {
-      "paused": "⏸"
+      "playing": "▶",
+      "paused": "⏸",
+      "stopped": "⏹"
     },
+    "tooltip-format": "{title}\n{artist} - {album}\n{position}/{length}",
+    "tooltip-format-paused": "{title}\n{artist} - {album}\nPaused",
+    "on-click": "playerctl play-pause",
+    "on-click-right": "playerctl stop",
+    "on-scroll-up": "playerctl next",
+    "on-scroll-down": "playerctl previous",
     "max-length": 30
   },
   "custom/weather": {
@@ -223,7 +245,8 @@
     "tooltip": true,
     "interval": 300,
     "exec": "wttrbar --nerd --location Hildesheim",
-    "return-type": "json"
+    "return-type": "json",
+    "on-click": "curl -s 'wttr.in/Hildesheim?format=3' | xargs -I {} notify-send 'Weather' {}"
   },
   "temperature": {
     "thermal-zone": 2,
@@ -239,6 +262,7 @@
       "" // Icon: temperature-full
     ],
     "tooltip-format": "Temperature: {temperatureC}°C",
+    "on-click": "omarchy-launch-or-focus-tui btop",
     "interval": 5
   },
   "custom/calendar": {
@@ -250,7 +274,8 @@
     "exec": "~/.config/waybar/net_speed.sh",
     "interval": 2,
     "format": "{}",
-    "tooltip-format": "Network Speed"
+    "tooltip-format": "Network Speed\nClick to open network manager",
+    "on-click": "ghostty --class=Impala -e impala"
   },
   "disk": {
     "interval": 30,
@@ -258,8 +283,9 @@
     "format-warning": "󰋼 {percentage_used}%",
     "format-critical": "󰋼 {percentage_used}%",
     "path": "/",
-    "tooltip-format": "Disk: {used} / {total} ({percentage_used}%)",
+    "tooltip-format": "Disk: {used} / {total} ({percentage_used}%)\nFree: {free}",
     "on-click": "omarchy-launch-or-focus-tui btop",
+    "on-click-right": "thunar",
     "states": {
       "warning": 80,
       "critical": 90
