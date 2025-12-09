@@ -95,8 +95,7 @@
   "clock": {
     "format": "{:%A %H:%M}",
     "format-alt": "{:%d %B W%V %Y}",
-    "tooltip-format": "{:%A, %B %d, %Y}\n{:%H:%M:%S}",
-    "on-click": "lvsk-calendar-launcher",
+    "tooltip": false,
     "on-click-right": "omarchy-cmd-tzupdate"
   },
   "memory": {
