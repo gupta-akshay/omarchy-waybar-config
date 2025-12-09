@@ -102,7 +102,9 @@ window#waybar.hidden {
 #custom-calendar,
 #custom-netspeed,
 #clock,
-#tray-expander {
+#tray-expander,
+#disk,
+#idle_inhibitor {
   background-color: @dark-bg;
   color: @fg;
   margin: 2px;
@@ -155,7 +157,9 @@ window#waybar.hidden {
 #clock:hover,
 #custom-weather:hover,
 #custom-calendar:hover,
-#custom-netspeed:hover {
+#custom-netspeed:hover,
+#disk:hover,
+#idle_inhibitor:hover {
   background-color: @hover-bg;
   color: @rd1;
 }
