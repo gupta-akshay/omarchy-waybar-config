@@ -57,7 +57,7 @@ window#waybar.hidden {
   color: @fg;
   background-color: transparent;
   margin: 4px 2px;
-  padding: 0 10px;
+  padding: 0 5px;
   border-radius: 20px;
   transition: all 0.3s ease;
 }
@@ -70,7 +70,7 @@ window#waybar.hidden {
 #workspaces button.active {
   background-color: @rd1;
   color: @dark-bg;
-  min-width: 40px;
+  min-width: 30px;
   background-size: 400% 400%;
 }
 
