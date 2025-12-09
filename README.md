@@ -14,8 +14,11 @@ This setup assumes the following tools are already available:
 - `waybar-module-pacman-updates` for the pacman update indicator.
 - `bc` (used by `net_speed.sh` for network speed calculations).
 - `lvsk-calendar` for the calendar module.
-- `ghostty`, `btop`, `wiremix`, and other Omarchy helper commands (`omarchy-*`, `impala`) that are referenced for click actions. Replace or remove these bindings if you are not on Omarchy.
+- `playerctl` for media player control (MPRIS module).
+- `ghostty`, `btop`, `wiremix`, `thunar`, `powerprofilesctl`, and other Omarchy helper commands (`omarchy-*`, `impala`) that are referenced for click actions. Replace or remove these bindings if you are not on Omarchy.
 - JetBrainsMono Nerd Font (Propo variant) and the Omarchy theme assets at `~/.config/omarchy/current/theme/waybar.css`, which `style.css` imports.
+
+**Note:** The temperature module is configured for specific hardware paths (`/sys/class/hwmon/hwmon3/temp2_input` and thermal zone 2). You may need to adjust these paths in `config.jsonc` to match your system's hardware monitoring setup.
 
 ## Installation
 
@@ -61,13 +64,17 @@ Make sure to update your location in `custom/weather` block in your `config.json
    chmod +x ~/.config/waybar/net_speed.sh
    ```
 
-5. Update the weather location (currently set to Hildesheim) and adjust the Omarchy-specific helper commands in `config.jsonc` if you are on a different setup, then restart Waybar (e.g. `omarchy-restart-waybar`).
+5. Update the weather location (currently set to Hildesheim) in the `custom/weather` block, adjust the temperature module hardware paths if needed (see Requirements), and adjust the Omarchy-specific helper commands in `config.jsonc` if you are on a different setup, then restart Waybar (e.g. `omarchy-restart-waybar`).
 
 ## What's included
 
-- `config.jsonc` – Waybar module definitions, click actions, and custom modules (Omarchy launcher, weather, pacman updates, CAVA, network speed, calendar).
-- `style.css` – Styling that imports the Omarchy theme palette and applies the HANCORE-inspired layout tweaks.
-- `cava.sh` – Lightweight wrapper that streams unicode bars from CAVA for the `custom/cava` module and hides the visualizer during silence.
-- `net_speed.sh` – Script that calculates and displays network upload/download speeds in Mbps for the `custom/netspeed` module.
+- `config.jsonc` – Waybar module definitions, click actions, and custom modules:
+  - **Left modules:** Omarchy launcher, Hyprland workspaces, active window, CAVA audio visualizer, MPRIS media player
+  - **Center modules:** Clock, calendar, weather, network speed, pacman updates, Omarchy update checker
+  - **Right modules:** System tray (with expander), idle inhibitor, temperature, network, disk, memory, pulseaudio, CPU, battery
+  - Includes Bluetooth module within the tray expander group
+- `style.css` – Styling that imports the Omarchy theme palette and applies the HANCORE-inspired layout tweaks with hover effects, animations, and color-coded states (critical battery/disk/temperature warnings).
+- `cava.sh` – Lightweight wrapper that streams unicode bars from CAVA for the `custom/cava` module and automatically hides the visualizer during 2+ seconds of silence.
+- `net_speed.sh` – Script that calculates and displays network upload/download speeds in Mbps for the `custom/netspeed` module, preferring non-tunnel interfaces.
 
 Feel free to fork and adapt bindings, fonts, or modules to suit your setup. If you run into missing binaries, double-check the Requirements section or swap the commands for equivalents on your system.
