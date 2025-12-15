@@ -1,0 +1,11 @@
+{
+  "custom/weather": {
+    "format": "{}°",
+    "tooltip": true,
+    "interval": 300,
+    "exec": "wttrbar --nerd",
+    "return-type": "json",
+    "on-click": "curl -s 'wttr.in?format=3' | xargs -I {} notify-send 'Weather' {}"
+  }
+}
+

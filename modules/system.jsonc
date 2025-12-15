@@ -1,0 +1,195 @@
+{
+  "cpu": {
+    "interval": 5,
+    "format": "{usage}% 󰍛",
+    "on-click": "omarchy-launch-or-focus-tui btop",
+    "on-click-right": "omarchy-launch-or-focus-tui htop",
+    "tooltip-format": "CPU: {usage}%\nLoad: {load}"
+  },
+  "clock": {
+    "format": "{:%A %H:%M}",
+    "format-alt": "{:%d %B W%V %Y}",
+    "tooltip": false,
+    "on-click-right": "omarchy-cmd-tzupdate"
+  },
+  "memory": {
+    "interval": 5,
+    "format": "  {percentage}%",
+    "on-click": "omarchy-launch-or-focus-tui btop",
+    "on-click-right": "omarchy-launch-or-focus-tui htop",
+    "tooltip-format": "Memory: {used:0.1f}G / {total:0.1f}G ({percentage}%)\nSwap: {swapUsed:0.1f}G / {swapTotal:0.1f}G"
+  },
+  "network": {
+    "format-icons": [
+      "󰤯",
+      "󰤟",
+      "󰤢",
+      "󰤥",
+      "󰤨"
+    ],
+    "format": "{icon}",
+    "format-wifi": "{icon}",
+    "format-ethernet": "{ifname} 󰀂",
+    "format-disconnected": "󰖪",
+    "tooltip-format-wifi": "{essid} ({frequency} GHz)\nIP: {ipaddr}\n⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}",
+    "tooltip-format-ethernet": "IP: {ipaddr}\n⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}",
+    "tooltip-format-disconnected": "Disconnected",
+    "interval": 3,
+    "nospacing": 1,
+    "on-click": "ghostty --class=Impala -e impala",
+    "on-click-right": "nm-connection-editor"
+  },
+  "battery": {
+    "format": "{capacity}% {icon}",
+    "format-discharging": "{icon}",
+    "format-charging": "{icon}",
+    "format-plugged": "{power}",
+    "format-icons": {
+      "charging": [
+        "󰢜",
+        "󰂆",
+        "󰂇",
+        "󰂈",
+        "󰢝",
+        "󰂉",
+        "󰢞",
+        "󰂊",
+        "󰂋",
+        "󰂅"
+      ],
+      "default": [
+        "󰁺",
+        "󰁻",
+        "󰁼",
+        "󰁽",
+        "󰁾",
+        "󰁿",
+        "󰂀",
+        "󰂁",
+        "󰂂",
+        "󰁹"
+      ]
+    },
+    "format-full": "󰂅",
+    "tooltip-format-discharging": "{power:>1.0f}W↓ {capacity}%\nTime remaining: {time}",
+    "tooltip-format-charging": "{power:>1.0f}W↑ {capacity}%\nTime until full: {time}",
+    "tooltip-format-full": "Full ({capacity}%)",
+    "on-click-right": "powerprofilesctl",
+    "interval": 5,
+    "states": {
+      "warning": 20,
+      "critical": 10
+    }
+  },
+  "bluetooth": {
+    "format": "",
+    "format-disabled": "󰂲",
+    "format-connected": "",
+    "tooltip-format": "Devices connected: {num_connections}",
+    "on-click": "omarchy-launch-bluetooth"
+  },
+  "pulseaudio": {
+    "format": "{volume}% {icon}",
+    "format-muted": "󰝟 {volume}%",
+    "on-click": "ghostty --class=Wiremix -e wiremix",
+    "on-click-right": "omarchy-launch-or-focus-tui wiremix",
+    "on-click-middle": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+    "tooltip-format": "{volume}% | {format_source}",
+    "tooltip-format-muted": "Muted ({volume}%)",
+    "scroll-step": 5,
+    "format-icons": {
+      "default": [
+        "",
+        "",
+        ""
+      ]
+    }
+  },
+  "group/tray-expander": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 600,
+      "children-class": "tray-group-item"
+    },
+    "modules": [
+      "custom/expand-icon",
+      "tray",
+      "bluetooth"
+    ]
+  },
+  "custom/expand-icon": {
+    "format": " ",
+    "tooltip": false
+  },
+  "tray": {
+    "icon-size": 12,
+    "spacing": 12
+  },
+  "mpris": {
+    "format": "{status_icon} {artist} - {title}",
+    "format-paused": "{status_icon} {artist} - {title}",
+    "format-stopped": "{status_icon}",
+    "format-disconnected": "",
+    "player-icons": {
+      "default": "🎵",
+      "mpv": "🎵",
+      "spotify": "󰓇",
+      "firefox": "󰈹"
+    },
+    "status-icons": {
+      "playing": "▶",
+      "paused": "⏸",
+      "stopped": "⏹"
+    },
+    "tooltip-format": "{title}\n{artist} - {album}\n{position}/{length}",
+    "tooltip-format-paused": "{title}\n{artist} - {album}\nPaused",
+    "on-click": "playerctl play-pause",
+    "on-click-right": "playerctl stop",
+    "on-scroll-up": "playerctl next",
+    "on-scroll-down": "playerctl previous",
+    "max-length": 30
+  },
+  "temperature": {
+    "thermal-zone": 2,
+    "hwmon-path": "/sys/class/hwmon/hwmon3/temp2_input",
+    "format": "{temperatureC}°C ",
+    "critical-threshold": 70,
+    "format-critical": " {temperatureC}°C",
+    "format-icons": [
+      "", // Icon: temperature-empty
+      "", // Icon: temperature-quarter
+      "", // Icon: temperature-half
+      "", // Icon: temperature-three-quarters
+      "" // Icon: temperature-full
+    ],
+    "tooltip-format": "Temperature: {temperatureC}°C",
+    "on-click": "omarchy-launch-or-focus-tui btop",
+    "interval": 5
+  },
+  "disk": {
+    "interval": 30,
+    "format": "󰋼 {percentage_used}%",
+    "format-warning": "󰋼 {percentage_used}%",
+    "format-critical": "󰋼 {percentage_used}%",
+    "path": "/",
+    "tooltip-format": "Disk: {used} / {total} ({percentage_used}%)\nFree: {free}",
+    "on-click": "omarchy-launch-or-focus-tui btop",
+    "on-click-right": "thunar",
+    "states": {
+      "warning": 80,
+      "critical": 90
+    }
+  },
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": {
+      "activated": "󰒳",
+      "deactivated": "󰒲"
+    },
+    "tooltip-format": "{status}",
+    "tooltip-format-activated": "Idle inhibitor: Active",
+    "tooltip-format-deactivated": "Idle inhibitor: Inactive",
+    "on-click": "toggle"
+  }
+}
+
