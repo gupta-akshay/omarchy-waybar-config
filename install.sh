@@ -290,16 +290,17 @@ copy_config() {
     cp -a "$src" "$WAYBAR_DIR/"
   done
 
-  # Make all shipped scripts executable (git might not preserve +x on all files).
-  local -a script_files=()
+  # Ensure scripts are executable (git perms may not be preserved on some setups).
   if [[ -d "$WAYBAR_DIR/scripts" ]]; then
-    while IFS= read -r -d '' f; do
-      script_files+=("$f")
-    done < <(find "$WAYBAR_DIR/scripts" -maxdepth 1 -type f -name '*.sh' -print0)
-  fi
+    # Make directory traversable and scripts readable/executable.
+    chmod -R a+rx "$WAYBAR_DIR/scripts" || true
+    # Ensure shell scripts are executable (ignore if glob doesn't match).
+    chmod +x "$WAYBAR_DIR/scripts/"*.sh 2>/dev/null || true
 
-  if (( ${#script_files[@]} > 0 )); then
-    chmod +x "${script_files[@]}"
+    if command -v stat >/dev/null 2>&1; then
+      log "Script permissions:"
+      stat -c '%a %n' "$WAYBAR_DIR/scripts/"*.sh 2>/dev/null || true
+    fi
   fi
 }
 
