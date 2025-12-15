@@ -101,6 +101,7 @@ window#waybar.hidden {
 #custom-cava,
 #custom-calendar,
 #custom-netspeed,
+#custom-gpu,
 #clock,
 #tray-expander,
 #disk,
@@ -158,6 +159,7 @@ window#waybar.hidden {
 #custom-weather:hover,
 #custom-calendar:hover,
 #custom-netspeed:hover,
+#custom-gpu:hover,
 #disk:hover,
 #idle_inhibitor:hover {
   background-color: @hover-bg;

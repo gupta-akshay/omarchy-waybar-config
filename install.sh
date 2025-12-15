@@ -2,7 +2,7 @@
 set -euo pipefail
 
 PACKAGES=(cava libcava wttrbar waybar-module-pacman-updates bc lvsk-calendar)
-FILES=(config.jsonc style.css cava.sh net_speed.sh modules)
+FILES=(config.jsonc style.css modules scripts)
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WAYBAR_DIR="${HOME}/.config/waybar"
 SKIP_PACKAGES=false
@@ -106,6 +106,7 @@ select_optional_modules() {
     "temperature|modules-right|Temperature"
     "disk|modules-right|Disk usage"
     "memory|modules-right|Memory usage"
+    "custom/gpu|modules-right|GPU stats (NVIDIA only)"
   )
 
   # If we can't prompt (non-interactive), default to none selected.
@@ -225,6 +226,9 @@ write_layout() {
   if contains_item "memory" "${SELECTED_OPTIONAL_MODULES[@]}"; then
     right_post_network_optional+=( "memory" )
   fi
+  if contains_item "custom/gpu" "${SELECTED_OPTIONAL_MODULES[@]}"; then
+    right_post_network_optional+=( "custom/gpu" )
+  fi
   if (( ${#right_pre_network_optional[@]} > 0 || ${#right_post_network_optional[@]} > 0 )); then
     modules_right=( "group/tray-expander" "${right_pre_network_optional[@]}" "network" "${right_post_network_optional[@]}" "cpu" "pulseaudio" "battery" )
   fi
@@ -286,8 +290,9 @@ copy_config() {
     cp -a "$src" "$WAYBAR_DIR/"
   done
 
-  chmod +x "$WAYBAR_DIR/cava.sh"
-  chmod +x "$WAYBAR_DIR/net_speed.sh"
+  chmod +x "$WAYBAR_DIR/scripts/cava.sh"
+  chmod +x "$WAYBAR_DIR/scripts/net_speed.sh"
+  chmod +x "$WAYBAR_DIR/scripts/waybar-gpu.sh"
 }
 
 configure_weather() {
@@ -338,6 +343,11 @@ main() {
 
   # Always generate layout based on core + user selection.
   write_layout
+
+  if contains_item "custom/gpu" "${SELECTED_OPTIONAL_MODULES[@]}"; then
+    printf '\n'
+    printf 'Note: custom/gpu currently only supports NVIDIA GPUs (requires nvidia-smi).\n'
+  fi
 
   # Only prompt/configure weather if the weather module is enabled.
   if contains_item "custom/weather" "${SELECTED_OPTIONAL_MODULES[@]}"; then
