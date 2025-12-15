@@ -312,12 +312,14 @@ configure_weather() {
   local click_url
 
   if [[ -n "${WEATHER_LOCATION}" ]]; then
-    local loc_json
-    loc_json="$(json_escape "$WEATHER_LOCATION")"
-    exec_cmd="wttrbar --nerd --location \"${loc_json}\""
+    # Write JSON so Waybar receives: wttrbar --nerd --location "{provided location}"
+    # This must appear in the JSON as: \"{provided location}\"
+    local exec_cmd_raw
+    exec_cmd_raw="wttrbar --nerd --location \"${WEATHER_LOCATION}\""
+    exec_cmd="$(json_escape "$exec_cmd_raw")"
     click_url="wttr.in/$(uri_encode "$WEATHER_LOCATION")?format=3"
   else
-    exec_cmd="wttrbar --nerd"
+    exec_cmd="$(json_escape "wttrbar --nerd")"
     click_url="wttr.in?format=3"
   fi
 
