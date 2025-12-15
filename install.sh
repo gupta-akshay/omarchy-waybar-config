@@ -290,9 +290,17 @@ copy_config() {
     cp -a "$src" "$WAYBAR_DIR/"
   done
 
-  chmod +x "$WAYBAR_DIR/scripts/cava.sh"
-  chmod +x "$WAYBAR_DIR/scripts/net_speed.sh"
-  chmod +x "$WAYBAR_DIR/scripts/waybar-gpu.sh"
+  # Make all shipped scripts executable (git might not preserve +x on all files).
+  local -a script_files=()
+  if [[ -d "$WAYBAR_DIR/scripts" ]]; then
+    while IFS= read -r -d '' f; do
+      script_files+=("$f")
+    done < <(find "$WAYBAR_DIR/scripts" -maxdepth 1 -type f -name '*.sh' -print0)
+  fi
+
+  if (( ${#script_files[@]} > 0 )); then
+    chmod +x "${script_files[@]}"
+  fi
 }
 
 configure_weather() {
