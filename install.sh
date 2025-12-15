@@ -7,6 +7,7 @@ REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WAYBAR_DIR="${HOME}/.config/waybar"
 SKIP_PACKAGES=false
 WEATHER_LOCATION=""
+SELECTED_OPTIONAL_MODULES=()
 
 usage() {
   cat <<EOF
@@ -83,6 +84,180 @@ PY
   printf '%s' "$s" | sed 's/ /%20/g'
 }
 
+contains_item() {
+  local needle="$1"; shift
+  local item
+  for item in "$@"; do
+    [[ "$item" == "$needle" ]] && return 0
+  done
+  return 1
+}
+
+select_optional_modules() {
+  # Optional modules (not core). Users can pick 0+.
+  # Format: "<module>|<position>|<label>"
+  local -a options=(
+    "custom/cava|modules-left|CAVA audio visualizer"
+    "mpris|modules-left|Media player (MPRIS)"
+    "custom/calendar|modules-center|Calendar launcher"
+    "custom/weather|modules-center|Weather (wttrbar)"
+    "custom/netspeed|modules-center|Network speed"
+    "idle_inhibitor|modules-right|Idle inhibitor toggle"
+    "temperature|modules-right|Temperature"
+    "disk|modules-right|Disk usage"
+    "memory|modules-right|Memory usage"
+  )
+
+  # If we can't prompt (non-interactive), default to none selected.
+  if [[ ! -t 0 ]]; then
+    SELECTED_OPTIONAL_MODULES=()
+    return 0
+  fi
+
+  printf '\n'
+  printf 'Waybar optional modules\n'
+  printf 'Select optional modules to enable (core modules are always included).\n'
+  printf 'Enter numbers separated by spaces/commas. Empty = none. "a" = all.\n\n'
+
+  local i=1
+  local entry module position label
+  for entry in "${options[@]}"; do
+    IFS='|' read -r module position label <<<"$entry"
+    printf '%2d) %-18s (%s) - %s\n' "$i" "$module" "$position" "$label"
+    i=$((i + 1))
+  done
+
+  local input
+  while true; do
+    printf '\n'
+    read -r -p "Selection: " input
+
+    # none
+    if [[ -z "${input}" ]]; then
+      SELECTED_OPTIONAL_MODULES=()
+      return 0
+    fi
+
+    # all
+    if [[ "${input}" == "a" || "${input}" == "all" ]]; then
+      SELECTED_OPTIONAL_MODULES=()
+      for entry in "${options[@]}"; do
+        IFS='|' read -r module position label <<<"$entry"
+        SELECTED_OPTIONAL_MODULES+=("$module")
+      done
+      return 0
+    fi
+
+    # parse numbers
+    input="${input//,/ }"
+    local -a picked=()
+    local tok
+    local max=$(( ${#options[@]} ))
+    local ok=true
+    for tok in $input; do
+      if [[ ! "$tok" =~ ^[0-9]+$ ]]; then
+        ok=false
+        break
+      fi
+      if (( tok < 1 || tok > max )); then
+        ok=false
+        break
+      fi
+      entry="${options[$((tok - 1))]}"
+      IFS='|' read -r module position label <<<"$entry"
+      if ! contains_item "$module" "${picked[@]}"; then
+        picked+=("$module")
+      fi
+    done
+
+    if [[ "$ok" == "true" ]]; then
+      SELECTED_OPTIONAL_MODULES=("${picked[@]}")
+      return 0
+    fi
+
+    printf 'Invalid selection. Please enter numbers between 1 and %d (e.g. "1 3 5"), empty for none, or "a" for all.\n' "$max"
+  done
+}
+
+write_layout() {
+  local layout_file="$WAYBAR_DIR/modules/layout.jsonc"
+  mkdir -p "$(dirname "$layout_file")"
+
+  local -a modules_left=( "custom/omarchy" "hyprland/workspaces" "hyprland/window" )
+  local -a modules_center=( "clock" "custom/updatespacman" "custom/update" )
+  local -a modules_right=( "group/tray-expander" "network" "cpu" "pulseaudio" "battery" )
+
+  # Insert selected optional modules into their canonical positions.
+  if contains_item "custom/cava" "${SELECTED_OPTIONAL_MODULES[@]}"; then
+    modules_left+=( "custom/cava" )
+  fi
+  if contains_item "mpris" "${SELECTED_OPTIONAL_MODULES[@]}"; then
+    modules_left+=( "mpris" )
+  fi
+
+  # Center: clock, (optional), updates...
+  local -a center_optional=()
+  if contains_item "custom/calendar" "${SELECTED_OPTIONAL_MODULES[@]}"; then
+    center_optional+=( "custom/calendar" )
+  fi
+  if contains_item "custom/weather" "${SELECTED_OPTIONAL_MODULES[@]}"; then
+    center_optional+=( "custom/weather" )
+  fi
+  if contains_item "custom/netspeed" "${SELECTED_OPTIONAL_MODULES[@]}"; then
+    center_optional+=( "custom/netspeed" )
+  fi
+  if (( ${#center_optional[@]} > 0 )); then
+    modules_center=( "clock" "${center_optional[@]}" "custom/updatespacman" "custom/update" )
+  fi
+
+  # Right: tray-expander, (optional), then core
+  local -a right_pre_network_optional=()
+  local -a right_post_network_optional=()
+  if contains_item "idle_inhibitor" "${SELECTED_OPTIONAL_MODULES[@]}"; then
+    right_pre_network_optional+=( "idle_inhibitor" )
+  fi
+  if contains_item "temperature" "${SELECTED_OPTIONAL_MODULES[@]}"; then
+    right_pre_network_optional+=( "temperature" )
+  fi
+  if contains_item "disk" "${SELECTED_OPTIONAL_MODULES[@]}"; then
+    right_post_network_optional+=( "disk" )
+  fi
+  if contains_item "memory" "${SELECTED_OPTIONAL_MODULES[@]}"; then
+    right_post_network_optional+=( "memory" )
+  fi
+  if (( ${#right_pre_network_optional[@]} > 0 || ${#right_post_network_optional[@]} > 0 )); then
+    modules_right=( "group/tray-expander" "${right_pre_network_optional[@]}" "network" "${right_post_network_optional[@]}" "cpu" "pulseaudio" "battery" )
+  fi
+
+  print_json_array() {
+    local indent="$1"; shift
+    local first=true
+    local item
+    for item in "$@"; do
+      if [[ "$first" == "true" ]]; then
+        first=false
+      else
+        printf ',\n'
+      fi
+      printf '%s"%s"' "$indent" "$item"
+    done
+  }
+
+  {
+    printf '{\n'
+    printf '  "modules-left": [\n'
+    print_json_array '    ' "${modules_left[@]}"
+    printf '\n  ],\n'
+    printf '  "modules-center": [\n'
+    print_json_array '    ' "${modules_center[@]}"
+    printf '\n  ],\n'
+    printf '  "modules-right": [\n'
+    print_json_array '    ' "${modules_right[@]}"
+    printf '\n  ]\n'
+    printf '}\n'
+  } >"$layout_file"
+}
+
 install_packages() {
   if [[ "$SKIP_PACKAGES" == "true" ]]; then
     log "Skipping package installation"
@@ -157,9 +332,17 @@ EOF
 
 main() {
   install_packages
+  select_optional_modules
   backup_existing
   copy_config
-  configure_weather
+
+  # Always generate layout based on core + user selection.
+  write_layout
+
+  # Only prompt/configure weather if the weather module is enabled.
+  if contains_item "custom/weather" "${SELECTED_OPTIONAL_MODULES[@]}"; then
+    configure_weather
+  fi
   log "All done! Restart Waybar (or run omarchy-restart-waybar) to apply the theme."
 }
 

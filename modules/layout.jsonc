@@ -2,28 +2,18 @@
   "modules-left": [
     "custom/omarchy",
     "hyprland/workspaces",
-    "hyprland/window",
-    "custom/cava",
-    "mpris"
+    "hyprland/window"
   ],
   "modules-center": [
     "clock",
-    "custom/calendar",
-    "custom/weather",
-    "custom/netspeed",
     "custom/updatespacman",
     "custom/update"
   ],
   "modules-right": [
     "group/tray-expander",
-    "idle_inhibitor",
-    "temperature",
     "network",
-    "disk",
-    "memory",
-    "pulseaudio",
     "cpu",
+    "pulseaudio",
     "battery"
   ]
 }
-
