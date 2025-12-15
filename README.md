@@ -30,9 +30,7 @@ cd omarchy-waybar-config
 ./install.sh
 ```
 
-If you see a permission error, run `chmod +x install.sh` (or use `bash install.sh`). The script installs/updates the required AUR packages via `yay`, backs up your existing `~/.config/waybar` directory, copies only the needed files (`config.jsonc`, `style.css`, `cava.sh`, `net_speed.sh`) into place, and makes the scripts executable. Pass `--skip-packages` if you have already installed the dependencies or want to handle them yourself, and use `--waybar-dir` to target a non-standard location.
-
-Make sure to update your location in `custom/weather` block in your `config.jsonc` file.
+If you see a permission error, run `chmod +x install.sh` (or use `bash install.sh`). The script installs/updates the required AUR packages via `yay`, backs up your existing `~/.config/waybar` directory, copies the config (`config.jsonc`, `modules/`, `style.css`, `cava.sh`, `net_speed.sh`) into place, and makes the scripts executable. Pass `--skip-packages` if you have already installed the dependencies or want to handle them yourself, use `--waybar-dir` to target a non-standard location, and pass `--location "Your City"` to set the weather location non-interactively (otherwise you’ll be prompted).
 
 ### Manual (if you prefer to do it yourself)
 
@@ -64,11 +62,11 @@ Make sure to update your location in `custom/weather` block in your `config.json
    chmod +x ~/.config/waybar/net_speed.sh
    ```
 
-5. Update the weather location (currently set to Hildesheim) in the `custom/weather` block, adjust the temperature module hardware paths if needed (see Requirements), and adjust the Omarchy-specific helper commands in `config.jsonc` if you are on a different setup, then restart Waybar (e.g. `omarchy-restart-waybar`).
+5. Adjust the temperature module hardware paths if needed (see Requirements), and adjust the Omarchy-specific helper commands in the `modules/*.jsonc` files if you are on a different setup, then restart Waybar (e.g. `omarchy-restart-waybar`).
 
 ## What's included
 
-- `config.jsonc` – Waybar module definitions, click actions, and custom modules:
+- `config.jsonc` + `modules/*.jsonc` – Waybar module definitions, click actions, and custom modules:
   - **Left modules:** Omarchy launcher, Hyprland workspaces, active window, CAVA audio visualizer, MPRIS media player
   - **Center modules:** Clock, calendar, weather, network speed, pacman updates, Omarchy update checker
   - **Right modules:** System tray (with expander), idle inhibitor, temperature, network, disk, memory, pulseaudio, CPU, battery

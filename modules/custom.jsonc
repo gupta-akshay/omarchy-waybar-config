@@ -1,0 +1,43 @@
+{
+  "custom/omarchy": {
+    "format": "<span font='omarchy'>\ue900</span>",
+    "on-click": "omarchy-menu",
+    "tooltip-format": "Omarchy Menu\n\nSuper + Alt + Space"
+  },
+  "custom/update": {
+    "format": "<span weight='bold' >\ue900</span>",
+    "exec": "omarchy-update-available",
+    "on-click": "omarchy-launch-floating-terminal-with-presentation omarchy-update",
+    "tooltip-format": "Omarchy update available",
+    "interval": 600
+  },
+  "custom/updatespacman": {
+    "format": "{} {icon}",
+    "return-type": "json",
+    "format-icons": {
+      "has-updates": "󱍷",
+      "updated": "󰂪"
+    },
+    "exec-if": "which waybar-module-pacman-updates",
+    "exec": "waybar-module-pacman-updates --interval-seconds 5 --network-interval-seconds 300",
+    "on-click": "omarchy-launch-floating-terminal-with-presentation sudo pacman -Syu",
+    "tooltip-format": "{} package updates available"
+  },
+  "custom/cava": {
+    "format": "{}",
+    "exec": "~/.config/waybar/cava.sh"
+  },
+  "custom/calendar": {
+    "format": " 󰃭 ",
+    "on-click": "lvsk-calendar-launcher",
+    "tooltip-format": "Click to open calendar"
+  },
+  "custom/netspeed": {
+    "exec": "~/.config/waybar/net_speed.sh",
+    "interval": 2,
+    "format": "{}",
+    "tooltip-format": "Network Speed\nClick to open network manager",
+    "on-click": "ghostty --class=Impala -e impala"
+  }
+}
+
