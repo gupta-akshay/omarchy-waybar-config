@@ -2,7 +2,7 @@
 set -euo pipefail
 
 PACKAGES=(cava libcava wttrbar waybar-module-pacman-updates bc lvsk-calendar)
-FILES=(config.jsonc style.css modules scripts)
+FILES=(config.jsonc style.css modules cava.sh net_speed.sh waybar-gpu.sh)
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WAYBAR_DIR="${HOME}/.config/waybar"
 SKIP_PACKAGES=false
@@ -290,9 +290,26 @@ copy_config() {
     cp -a "$src" "$WAYBAR_DIR/"
   done
 
-  chmod +x "$WAYBAR_DIR/scripts/cava.sh"
-  chmod +x "$WAYBAR_DIR/scripts/net_speed.sh"
-  chmod +x "$WAYBAR_DIR/scripts/waybar-gpu.sh"
+  # Ensure scripts are executable (git perms may not be preserved on some setups).
+  local -a script_paths=(
+    "$WAYBAR_DIR/cava.sh"
+    "$WAYBAR_DIR/net_speed.sh"
+    "$WAYBAR_DIR/waybar-gpu.sh"
+  )
+
+  local p
+  for p in "${script_paths[@]}"; do
+    [[ -f "$p" ]] || continue
+    chmod +x "$p" || true
+  done
+
+  if command -v stat >/dev/null 2>&1; then
+    log "Script permissions:"
+    for p in "${script_paths[@]}"; do
+      [[ -f "$p" ]] || continue
+      stat -c '%a %n' "$p" 2>/dev/null || true
+    done
+  fi
 }
 
 configure_weather() {
@@ -355,7 +372,14 @@ main() {
   if contains_item "custom/weather" "${SELECTED_OPTIONAL_MODULES[@]}"; then
     configure_weather
   fi
-  log "All done! Restart Waybar (or run omarchy-restart-waybar) to apply the theme."
+
+  # Apply changes immediately when running on Omarchy.
+  if command -v omarchy-restart-waybar >/dev/null 2>&1; then
+    log "Restarting Waybar (omarchy-restart-waybar)"
+    omarchy-restart-waybar || true
+  fi
+
+  log "All done!"
 }
 
 main "$@"
